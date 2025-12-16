@@ -19,102 +19,78 @@
             <p class="text-sm text-gray-500 mt-1">Especialista em Eletrónica, Informática e Eletroportáteis.</p>
         </header>
 
-        <!-- Secção de Upload e Resultado do Item -->
+        <!-- Banner de Erro -->
+        <div id="error-banner" class="hidden w-full max-w-2xl bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded shadow-md" role="alert">
+            <p class="font-bold">⚠️ Erro Detetado:</p>
+            <p id="error-text">A iniciar diagnóstico...</p>
+            <p class="text-xs mt-2 text-red-600">Dica: Se o erro for "404", verifique se a pasta 'api' está na raiz do projeto.</p>
+        </div>
+
+        <!-- Interface Principal -->
         <div class="w-full max-w-2xl bg-white p-6 rounded-xl card mb-6">
             <h2 class="text-xl font-semibold text-gray-700 mb-4">Analisar Novo Produto</h2>
             
-            <!-- Input de Ficheiro/Câmara -->
             <label for="photo-upload" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-indigo-300 rounded-lg cursor-pointer hover:bg-indigo-50 transition duration-150">
-                <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.808-1.212A2 2 0 0110.535 5h2.93a2 2 0 011.664.89l.808 1.212A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                <span id="upload-label" class="mt-2 text-sm text-indigo-600 font-medium text-center">
-                    Clique para tirar uma foto AGORA ou selecionar na galeria
-                </span>
+                <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.808-1.212A2 2 0 0110.535 5h2.93a2 2 0 011.664.89l.808 1.212A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span id="upload-label" class="mt-2 text-sm text-indigo-600 font-medium text-center">Clique para tirar uma foto AGORA</span>
                 <input type="file" id="photo-upload" accept="image/*" class="hidden">
             </label>
 
-            <!-- BOTÃO DE AVALIAÇÃO COM SPINNER E CONTADOR -->
-            <button id="evaluate-button" class="w-full mt-4 px-4 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-300 flex items-center justify-center space-x-2" disabled>
-                <svg id="loading-spinner" class="animate-spin h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+            <button id="evaluate-button" class="w-full mt-4 px-4 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-150 disabled:bg-indigo-300 flex items-center justify-center space-x-2" disabled>
+                <svg id="loading-spinner" class="animate-spin h-5 w-5 text-white hidden" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 <span id="evaluation-timer" class="text-white hidden text-sm font-light"></span>
-                <span id="button-text" class="">Avaliar Item com IA</span>
+                <span id="button-text">Avaliar Item com IA</span>
             </button>
-
-            <!-- Área de Status/Mensagens -->
             <div id="message-area" class="mt-4 text-center"></div>
-
         </div>
 
-        <!-- Secção de Total Acumulado -->
         <div class="w-full max-w-2xl bg-indigo-50 p-6 rounded-xl card mb-6 border border-indigo-200">
-            <div class="flex justify-between items-center mb-2">
-                <h2 class="text-xl font-semibold text-indigo-800">Valor Total Acumulado</h2>
-                <div id="risk-indicator" class="text-lg font-bold">
-                    <!-- Indicador de Risco -->
-                </div>
+            <h2 class="text-xl font-semibold text-indigo-800 mb-2">Valor Total Acumulado</h2>
+            <div id="risk-indicator" class="text-lg font-bold"></div>
+            <p id="total-value" class="text-4xl font-extrabold text-indigo-600 mt-2">R$ 0,00</p>
+            <div class="mt-4 text-sm text-gray-500 flex items-center">
+                <span class="mr-2">ID do Utilizador:</span>
+                <span id="user-id" class="font-mono text-xs bg-white border border-gray-200 p-1 rounded">A carregar...</span>
             </div>
-            <div class="mt-2">
-                <p id="total-value" class="text-4xl font-extrabold text-indigo-600">R$ 0,00</p>
-                <p class="text-sm text-indigo-500">Itens: <span id="total-quantity">0</span> | Média/Item: <span id="avg-unit-value">R$ 0,00</span></p>
-                <div class="mt-4 text-sm text-gray-500 flex items-center">
-                    <span class="mr-2">ID do Utilizador:</span>
-                    <span id="user-id" class="font-mono text-xs bg-white border border-gray-200 p-1 rounded">A carregar...</span>
-                    <button id="copy-user-id" class="text-indigo-600 hover:text-indigo-800 ml-2 text-xs font-bold" title="Copiar ID">
-                        COPIAR
-                    </button>
-                </div>
-            </div>
-            <button id="reset-lot" class="mt-4 px-4 py-2 bg-red-500 text-white font-semibold rounded-lg text-sm hover:bg-red-600 transition duration-150 w-full sm:w-auto">
-                Limpar Lote (Zerar Valor)
-            </button>
+            <button id="reset-lot" class="mt-4 px-4 py-2 bg-red-500 text-white font-semibold rounded-lg text-sm w-full sm:w-auto">Limpar Lote</button>
         </div>
 
-        <!-- Lista de Itens Avaliados -->
         <div class="w-full max-w-2xl bg-white p-6 rounded-xl card">
             <h2 class="text-xl font-semibold text-gray-700 mb-4">Itens no Lote</h2>
-            <ul id="item-list" class="space-y-4">
-                <li id="empty-state" class="text-gray-500 italic text-center p-4">Nenhum item qualificado no lote.</li>
-            </ul>
+            <ul id="item-list" class="space-y-4"><li id="empty-state" class="text-gray-500 italic text-center p-4">Nenhum item qualificado.</li></ul>
         </div>
     </div>
 
-    <!-- Modal de Mensagem Personalizada -->
+    <!-- Modal -->
     <div id="custom-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
         <div class="bg-white p-6 rounded-lg max-w-sm w-full shadow-2xl border-l-4 border-indigo-600">
             <h3 id="modal-title" class="text-lg font-bold text-gray-800 mb-3">Título</h3>
-            <p id="modal-content" class="text-gray-600 mb-4">Conteúdo da mensagem.</p>
-            <button id="modal-close" class="w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700">OK</button>
+            <p id="modal-content" class="text-gray-600 mb-4">Conteúdo.</p>
+            <button id="modal-close" class="w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg">OK</button>
         </div>
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc, collection, query, where, getDocs, setLogLevel, runTransaction } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // USANDO VERSÃO ESTÁVEL 10.12.2
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // Referências Globais
-        let app, db, auth, userId = null;
-        let selectedImageBase64 = null;
-        let isAuthReady = false;
-        let appId = 'default-app-id';
+        let app, db, auth, userId = null, selectedImageBase64 = null;
+        let isAuthReady = false, appId = 'default-app-id';
+        const LOT_ID = 'current_lot';
 
-        const LOT_ID = 'current_lot'; 
-
-        // Elementos DOM
+        // Elementos
         const evaluateButton = document.getElementById('evaluate-button');
         const uploadLabel = document.getElementById('upload-label');
-        const photoUpload = document.getElementById('photo-upload');
-        const loadingSpinner = document.getElementById('loading-spinner');
-        const buttonText = document.getElementById('button-text');
-        const evaluationTimer = document.getElementById('evaluation-timer');
-        
-        // Timer
-        let timerIntervalId = null;
-        const TIMEOUT_SECONDS = 30;
+        const errorBanner = document.getElementById('error-banner');
+        const errorText = document.getElementById('error-text');
 
-        // --- Funções de UI ---
+        function showError(msg) {
+            errorBanner.classList.remove('hidden');
+            errorText.innerHTML = msg; // Permite HTML para quebras de linha
+            console.error(msg);
+        }
 
         function showModal(title, content) {
             document.getElementById('modal-title').textContent = title;
@@ -122,131 +98,27 @@
             document.getElementById('custom-modal').classList.remove('hidden');
         }
 
-        function setButtonState(isLoading, text) {
-            evaluateButton.disabled = isLoading;
-            loadingSpinner.classList.toggle('hidden', !isLoading);
-            buttonText.classList.toggle('hidden', isLoading);
-            
-            if (!isLoading) {
-                buttonText.textContent = text;
-                evaluateButton.disabled = !selectedImageBase64;
-            }
-        }
-        
-        function startTimer() {
-            clearTimer();
-            let timeLeft = TIMEOUT_SECONDS;
-            evaluationTimer.classList.remove('hidden');
-            evaluationTimer.textContent = `(0:${timeLeft.toString().padStart(2, '0')}s)`;
-
-            timerIntervalId = setInterval(() => {
-                timeLeft--;
-                if (timeLeft <= 0) {
-                    clearTimer();
-                    evaluationTimer.textContent = `(0:00s)`;
-                } else {
-                    evaluationTimer.textContent = `(0:${timeLeft.toString().padStart(2, '0')}s)`;
-                }
-                if (timeLeft <= 10) evaluationTimer.classList.add('text-red-300');
-            }, 1000);
-        }
-
-        function clearTimer() {
-            if (timerIntervalId !== null) {
-                clearInterval(timerIntervalId);
-                timerIntervalId = null;
-            }
-            evaluationTimer.classList.add('hidden');
-            evaluationTimer.classList.remove('text-red-300');
-            evaluationTimer.textContent = '';
-        }
-
-        function displayMessage(message, type) {
-            const messageArea = document.getElementById('message-area');
-            let color = '';
-            switch (type) {
-                case 'success': color = 'text-green-600 bg-green-100'; break;
-                case 'error': color = 'text-red-600 bg-red-100'; break;
-                case 'info': color = 'text-blue-600 bg-blue-100'; break;
-                default: color = 'text-gray-600 bg-gray-100'; break;
-            }
-            messageArea.innerHTML = `<p class="p-2 rounded ${color}">${message}</p>`;
-            setTimeout(() => { messageArea.innerHTML = ''; }, 5000);
-        }
-        
-        function compressImage(base64Image, maxKiloBytes) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    ctx.drawImage(img, 0, 0, img.width, img.height);
-                    let compressedImage = base64Image;
-                    let currentQuality = 0.9;
-                    const maxBytes = maxKiloBytes * 1024;
-                    const minQuality = 0.4;
-                    while (compressedImage.length > maxBytes && currentQuality > minQuality) {
-                        currentQuality -= 0.1;
-                        compressedImage = canvas.toDataURL('image/jpeg', currentQuality);
-                    }
-                    if (compressedImage.length > maxBytes) {
-                        const ratio = Math.sqrt(maxBytes / compressedImage.length);
-                        canvas.width = img.width * ratio;
-                        canvas.height = img.height * ratio;
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        compressedImage = canvas.toDataURL('image/jpeg', 0.9);
-                    }
-                    resolve(compressedImage);
-                };
-                img.onerror = () => resolve(base64Image);
-                img.src = base64Image;
-            });
-        }
-        
-        function calculateLotRisk(lotData) {
-            const { totalValue, totalQuantity, totalCategoryRiskSum } = lotData;
-            if (totalQuantity === 0) return { riskLevel: 'N/A', indicator: '⚪️', color: 'text-gray-400', overallRiskScore: 0 };
-
-            const AUV = totalValue / totalQuantity;
-            let auvScore; 
-            if (AUV < 300) auvScore = 2; 
-            else if (AUV < 2000) auvScore = 5; 
-            else auvScore = 9; 
-
-            const AvgCR = totalCategoryRiskSum / totalQuantity; 
-            let volumeScore = totalQuantity < 5 ? 2 : (totalQuantity < 15 ? 5 : 8);
-            
-            const overallRiskScore = (AvgCR * 0.5) + (auvScore * 0.3) + (volumeScore * 0.2);
-
-            let riskLevel, indicator, color;
-            if (overallRiskScore < 4.0) { riskLevel = 'Baixo Risco'; indicator = '🟢'; color = 'text-green-600'; }
-            else if (overallRiskScore < 7.5) { riskLevel = 'Médio Risco'; indicator = '🟡'; color = 'text-yellow-600'; }
-            else { riskLevel = 'Alto Risco'; indicator = '🔴'; color = 'text-red-600'; }
-            
-            return { riskLevel, indicator, color, overallRiskScore: overallRiskScore.toFixed(1) };
-        }
-
-        // --- Firebase ---
-
         async function initializeFirebase() {
             try {
-                // Fetch segura das configurações no Backend
+                // 1. Tenta buscar configurações
                 const response = await fetch('/api/config');
-                if (!response.ok) throw new Error('Falha ao carregar configurações');
+                if (response.status === 404) throw new Error("Erro 404: O sistema não encontrou a pasta 'api'.<br>Verifique se os ficheiros 'api/config.js' e 'api/analyze.js' estão na raiz do projeto na Vercel.");
+                if (!response.ok) throw new Error(`Erro do Servidor (${response.status}): Verifique os logs da Vercel.`);
+
                 const configData = await response.json();
                 
-                const firebaseConfig = configData.firebaseConfig;
-                // Definir appId vindo do backend ou usar padrão
+                // 2. Verifica se as chaves existem
+                if (!configData.firebaseConfig || !configData.firebaseConfig.apiKey) {
+                    throw new Error("Erro de Configuração: As Variáveis de Ambiente estão vazias.<br>Vá à Vercel > Deployments > Redeploy para ativar as chaves.");
+                }
+
                 if (configData.appId) appId = configData.appId;
 
-                setLogLevel('silent');
-                app = initializeApp(firebaseConfig);
+                // 3. Inicializa Firebase
+                app = initializeApp(configData.firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
                 
-                // Autenticação anónima (simplificado)
                 await signInAnonymously(auth);
 
                 onAuthStateChanged(auth, (user) => {
@@ -254,179 +126,86 @@
                         userId = user.uid;
                         document.getElementById('user-id').textContent = userId;
                         isAuthReady = true;
-                        setupLotDocument();
                         setupRealtimeListener();
                     } else {
-                         signInAnonymously(auth).catch(e => console.error(e));
+                        signInAnonymously(auth).catch(e => showError("Erro Auth: " + e.message));
                     }
                 });
+
             } catch (error) {
-                console.error("Firebase Init Error:", error);
-                showModal("Erro Crítico", "Falha na conexão de dados ou configurações ausentes.");
+                showError(error.message);
             }
-        }
-
-        function getLotDocRef() {
-            return doc(db, 'artifacts', appId, 'public', 'data', 'auction_lots', LOT_ID);
-        }
-
-        async function setupLotDocument() {
-            if (!db || !userId) return;
-            const lotRef = getLotDocRef();
-            // Apenas cria se não existir para não sobrescrever dados
-            // Como é realtime, a interface atualiza sozinha
         }
 
         function setupRealtimeListener() {
             if (!isAuthReady || !db) return;
-            onSnapshot(getLotDocRef(), (docSnapshot) => {
+            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'auction_lots', LOT_ID), (docSnapshot) => {
                 if (docSnapshot.exists()) renderLotData(docSnapshot.data());
-                else { 
-                    // Se não existe, cria um documento inicial
-                     const defaultLot = {
-                        items: [], totalValue: 0, totalQuantity: 0, totalCategoryRiskSum: 0,
-                        lastUpdated: new Date().toISOString(), creatorId: userId
-                    };
-                    setDoc(getLotDocRef(), defaultLot, { merge: true });
-                    renderLotData(defaultLot); 
+                else {
+                    const defaultLot = { items: [], totalValue: 0, totalQuantity: 0, totalCategoryRiskSum: 0 };
+                    setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'auction_lots', LOT_ID), defaultLot, { merge: true });
+                    renderLotData(defaultLot);
                 }
-            }, (error) => console.error("Snapshot error:", error));
+            }, (error) => showError("Erro Banco de Dados: " + error.message));
         }
 
         function renderLotData(data) {
-            const totalValueElement = document.getElementById('total-value');
-            const itemListElement = document.getElementById('item-list');
-            const emptyState = document.getElementById('empty-state');
-            const totalQuantityElement = document.getElementById('total-quantity');
-            const avgUnitValueElement = document.getElementById('avg-unit-value');
-            const riskIndicatorElement = document.getElementById('risk-indicator');
-
-            const total = data.totalValue || 0;
-            const items = data.items || [];
-            const quantity = data.totalQuantity || 0;
-            const risk = calculateLotRisk(data);
-            const avgUnitValue = quantity > 0 ? total / quantity : 0;
-
-            totalValueElement.textContent = `R$ ${total.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
-            totalQuantityElement.textContent = quantity;
-            avgUnitValueElement.textContent = `R$ ${avgUnitValue.toFixed(2).replace('.', ',')}`;
-            riskIndicatorElement.innerHTML = `<span class="${risk.color} text-3xl mr-1 align-middle">${risk.indicator}</span><span class="text-gray-800 text-sm font-bold align-middle">${risk.riskLevel}</span>`;
-
-            itemListElement.innerHTML = '';
-            if (items.length === 0) {
-                emptyState.classList.remove('hidden');
-                itemListElement.appendChild(emptyState);
+            document.getElementById('total-value').textContent = `R$ ${(data.totalValue || 0).toFixed(2).replace('.', ',')}`;
+            const list = document.getElementById('item-list');
+            list.innerHTML = '';
+            if (!data.items || data.items.length === 0) {
+                list.innerHTML = '<li class="text-gray-500 italic text-center p-4">Nenhum item qualificado.</li>';
             } else {
-                emptyState.classList.add('hidden');
-                items.slice().reverse().forEach((item) => {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'flex flex-col sm:flex-row items-start bg-gray-50 p-4 rounded-lg border-l-4 border-indigo-500 shadow-sm transition hover:shadow-md';
-                    listItem.innerHTML = `
-                        <div class="sm:w-28 sm:h-28 flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
-                            ${item.photo ? `<img src="${item.photo}" alt="${item.itemName}" class="w-full h-full object-cover rounded-lg shadow-md border border-gray-200">` : `<div class="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-500">Sem Imagem</div>`}
+                data.items.slice().reverse().forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'bg-gray-50 p-4 rounded-lg border-l-4 border-indigo-500 shadow-sm mb-2';
+                    li.innerHTML = `
+                        <div class="flex justify-between font-bold">
+                            <span>${item.itemName}</span>
+                            <span class="text-indigo-700">R$ ${item['estimatedPriceR$:'].toFixed(2)}</span>
                         </div>
-                        <div class="flex-grow w-full">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-800">${item.itemName}</h3>
-                                    <span class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full mb-2 font-medium">${item.itemCategory}</span>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-lg font-bold text-indigo-700">R$ ${item['estimatedPriceR$:'].toFixed(2).replace('.', ',')}</p>
-                                    <p class="text-xs text-gray-500">Lance Máx: R$ ${item.maxBidRecommendationR$ ? item.maxBidRecommendationR$.toFixed(2).replace('.', ',') : '---'}</p>
-                                </div>
-                            </div>
-                            
-                            <p class="text-sm text-gray-700 mt-1 leading-snug"><strong>Estado:</strong> ${item.condition || 'N/A'} - ${item.description}</p>
-                            
-                            <div class="mt-3 grid grid-cols-2 gap-2 text-xs text-gray-600 bg-white p-2 rounded border border-gray-100">
-                                <div>
-                                    <span class="font-semibold text-gray-500">Potencial:</span><br>
-                                    ${item.resalePotential || 'Não analisado'}
-                                </div>
-                                <div class="text-right">
-                                    <span class="font-semibold text-gray-500">Risco Categoria:</span><br>
-                                    <span class="${item.categoryRiskScore > 7 ? 'text-red-500 font-bold' : (item.categoryRiskScore < 4 ? 'text-green-500 font-bold' : 'text-yellow-600 font-bold')}">${item.categoryRiskScore}/10</span>
-                                </div>
-                            </div>
-                        </div>
+                        <p class="text-sm text-gray-600">${item.condition} - ${item.description}</p>
+                        <div class="text-xs text-gray-500 mt-1">Risco: ${item.categoryRiskScore}/10 | Potencial: ${item.resalePotential}</div>
                     `;
-                    itemListElement.appendChild(listItem);
+                    list.appendChild(li);
                 });
             }
         }
 
-        async function addItemToLot(newItemData, imageBase64) {
-            if (!isAuthReady || !db) { showModal("Conexão", "Aguarde a conexão com o banco."); return; }
-            setButtonState(true, "A guardar...");
-            try {
-                const lotRef = getLotDocRef();
-                await runTransaction(db, async (transaction) => {
-                    const lotDoc = await transaction.get(lotRef);
-                    let data = lotDoc.exists() ? lotDoc.data() : {};
-                    
-                    const updatedItems = [...(data.items || []), { ...newItemData, photo: imageBase64 }];
-                    const updatedTotal = (data.totalValue || 0) + newItemData['estimatedPriceR$:'];
-                    const updatedQuantity = (data.totalQuantity || 0) + 1;
-                    const updatedRiskSum = (data.totalCategoryRiskSum || 0) + newItemData.categoryRiskScore;
-
-                    transaction.set(lotRef, {
-                        items: updatedItems, totalValue: updatedTotal, totalQuantity: updatedQuantity,
-                        totalCategoryRiskSum: updatedRiskSum, lastUpdated: new Date().toISOString(), creatorId: userId
-                    }, { merge: true });
-                });
-                displayMessage(`Item adicionado: ${newItemData.itemName}`, 'success');
-            } catch (error) {
-                console.error("Erro Persistência:", error);
-                throw new Error("Erro ao guardar dados. Tente novamente.");
-            }
+        async function compressImage(base64, maxKiloBytes) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width; canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    resolve(canvas.toDataURL('image/jpeg', 0.8)); // Simplificado
+                };
+                img.src = base64;
+            });
         }
-        
-        // --- API Backend Proxy (Gemini) ---
+
         async function callGeminiVision(base64Image) {
-            if (!base64Image) return null;
-            
-            // Agora chamamos o nosso próprio backend na Vercel
-            // A lógica do prompt e a API Key estão ocultas no servidor
-            const fetchFn = async () => {
-                const response = await fetch('/api/analyze', { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ image: base64Image }) 
-                });
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Server Error: ${response.status} - ${errorText}`);
-                }
-                return response.json();
-            };
-
-            // Sem lógica complexa de retry aqui, o backend pode tratar ou mantemos simples
-            try {
-                const result = await fetchFn();
-                return result; 
-            } catch (error) { throw error; }
+            const response = await fetch('/api/analyze', { 
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: base64Image }) 
+            });
+            if (!response.ok) {
+                const txt = await response.text();
+                throw new Error(txt);
+            }
+            return response.json();
         }
 
-        // --- Eventos ---
-        photoUpload.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            selectedImageBase64 = null;
-            evaluateButton.disabled = true;
-            uploadLabel.textContent = 'Clique para tirar uma foto AGORA ou selecionar na galeria';
-
+        document.getElementById('photo-upload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
             if (file) {
-                if (!file.type.startsWith('image/')) { showModal("Erro", "Ficheiro inválido."); return; }
+                uploadLabel.textContent = "A processar...";
                 const reader = new FileReader();
-                reader.onload = async function(e) {
-                    setButtonState(true, "A processar...");
-                    try {
-                        selectedImageBase64 = await compressImage(e.target.result, 900);
-                        const sizeInKB = Math.round(selectedImageBase64.length / 1024);
-                        evaluateButton.disabled = false;
-                        uploadLabel.textContent = `Foto pronta: ${file.name} (${sizeInKB} KB)`;
-                    } catch (err) { console.error(err); } finally { setButtonState(false, "Avaliar Item com IA"); }
+                reader.onload = async (ev) => {
+                    selectedImageBase64 = await compressImage(ev.target.result, 900);
+                    evaluateButton.disabled = false;
+                    uploadLabel.textContent = "Foto Pronta: " + file.name;
                 };
                 reader.readAsDataURL(file);
             }
@@ -434,68 +213,41 @@
 
         evaluateButton.addEventListener('click', async () => {
             if (!selectedImageBase64) return;
-            setButtonState(true, "A analisar...");
-            document.getElementById('message-area').innerHTML = ''; 
-            startTimer();
-
+            evaluateButton.disabled = true;
+            document.getElementById('button-text').textContent = "A analisar...";
             try {
-                const itemData = await callGeminiVision(selectedImageBase64);
-                
-                if (itemData.isInScope === false) {
-                    showModal("Produto Não Qualificado", itemData.outOfScopeReason || "Este produto não pertence às categorias permitidas.");
-                    return; 
+                const data = await callGeminiVision(selectedImageBase64);
+                if (data.isInScope === false) {
+                    showModal("Fora do Escopo", data.outOfScopeReason);
+                } else {
+                    // Adicionar ao banco
+                    const lotRef = doc(db, 'artifacts', appId, 'public', 'data', 'auction_lots', LOT_ID);
+                    await runTransaction(db, async (t) => {
+                        const d = (await t.get(lotRef)).data() || {};
+                        t.set(lotRef, {
+                            items: [...(d.items||[]), data],
+                            totalValue: (d.totalValue||0) + data['estimatedPriceR$:'],
+                            totalQuantity: (d.totalQuantity||0) + 1,
+                            totalCategoryRiskSum: (d.totalCategoryRiskSum||0) + data.categoryRiskScore
+                        }, { merge: true });
+                    });
                 }
-
-                // Normalização
-                itemData['estimatedPriceR$:'] = parseFloat(itemData['estimatedPriceR$:']?.toFixed(2) || 0);
-                itemData.maxBidRecommendationR$ = parseFloat(itemData.maxBidRecommendationR$?.toFixed(2) || 0);
-                itemData.categoryRiskScore = Math.min(10, Math.max(1, Math.round(itemData.categoryRiskScore || 5)));
-                
-                await addItemToLot(itemData, selectedImageBase64);
-
-            } catch (error) {
-                console.error("Erro:", error);
-                let msg = error.message;
-                showModal("Atenção", "Erro na análise: " + msg);
-            } finally {
-                clearTimer();
-                setButtonState(false, "Avaliar Item com IA");
-                selectedImageBase64 = null;
-                photoUpload.value = '';
-                uploadLabel.textContent = 'Clique para tirar uma foto AGORA ou selecionar na galeria';
+            } catch (e) { showModal("Erro", e.message); }
+            finally { 
+                evaluateButton.disabled = false; 
+                document.getElementById('button-text').textContent = "Avaliar Item com IA"; 
             }
         });
 
-        document.getElementById('reset-lot').addEventListener('click', () => {
-             showModal("Limpar Lote", "Deseja realmente apagar todos os itens?");
-             const btn = document.getElementById('modal-close');
-             btn.textContent = 'Confirmar Limpeza';
-             btn.onclick = async () => {
-                document.getElementById('custom-modal').classList.add('hidden'); 
-                if (!isAuthReady) return;
-                try {
-                    setButtonState(true, "A limpar...");
-                    await setDoc(getLotDocRef(), { items: [], totalValue: 0, totalQuantity: 0, totalCategoryRiskSum: 0, lastUpdated: new Date().toISOString(), creatorId: userId });
-                    displayMessage("Lote reiniciado.", 'info');
-                } catch (e) { console.error(e); } finally { 
-                    btn.textContent = 'OK';
-                    btn.onclick = () => document.getElementById('custom-modal').classList.add('hidden');
-                    setButtonState(false, "Avaliar Item com IA"); 
-                }
-             };
+        document.getElementById('reset-lot').addEventListener('click', async () => {
+            if (confirm("Apagar tudo?")) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'auction_lots', LOT_ID), { items: [], totalValue: 0, totalQuantity: 0, totalCategoryRiskSum: 0 });
+            }
         });
 
-        document.getElementById('modal-close').addEventListener('click', function() {
-            this.textContent = 'OK';
-            document.getElementById('custom-modal').classList.add('hidden');
-        });
+        document.getElementById('modal-close').addEventListener('click', () => document.getElementById('custom-modal').classList.add('hidden'));
 
-        document.getElementById('copy-user-id').addEventListener('click', () => {
-            const txt = document.getElementById('user-id').textContent;
-            navigator.clipboard.writeText(txt).then(() => displayMessage("ID Copiado", 'success')).catch(() => {});
-        });
-
-        window.onload = () => { initializeFirebase(); evaluateButton.disabled = true; };
+        window.onload = initializeFirebase;
     </script>
 </body>
 </html>
