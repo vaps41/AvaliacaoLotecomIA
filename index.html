@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avaliador de Lotes de Leilão com IA</title>
+    <title>Avaliador de Lotes: Eletrônicos & Informática</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -15,30 +15,31 @@
 
     <div id="app" class="min-h-screen p-4 sm:p-6 flex flex-col items-center">
         <header class="w-full max-w-2xl text-center mb-6">
-            <h1 class="text-3xl font-bold text-gray-800">Avaliação de Lote com IA</h1>
-            <p class="text-gray-500 mt-1">Capture uma foto instantânea ou envie um arquivo para avaliação.</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Avaliador de Logística Reversa</h1>
+            <p class="text-sm text-gray-500 mt-1">Especialista em Eletrônicos, Informática e Eletroportáteis.</p>
         </header>
 
-        <!-- Seção de Upload e Resultado do Item (Modo Único) -->
+        <!-- Seção de Upload e Resultado do Item -->
         <div class="w-full max-w-2xl bg-white p-6 rounded-xl card mb-6">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Adicionar Item ao Lote</h2>
-           
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Analisar Novo Produto</h2>
+            
             <!-- Input de Arquivo/Câmera -->
             <label for="photo-upload" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-indigo-300 rounded-lg cursor-pointer hover:bg-indigo-50 transition duration-150">
                 <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.808-1.212A2 2 0 0110.535 5h2.93a2 2 0 011.664.89l.808 1.212A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 <span id="upload-label" class="mt-2 text-sm text-indigo-600 font-medium text-center">
                     Clique para tirar uma foto AGORA ou selecionar na galeria
                 </span>
-                <!-- O accept="image/*" permite que o celular ofereça a opção de Câmera ou Galeria -->
                 <input type="file" id="photo-upload" accept="image/*" class="hidden">
             </label>
 
-            <button id="evaluate-button" class="w-full mt-4 px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-300" disabled>
-                <span id="button-text">Avaliar Item com IA</span>
-                <svg id="loading-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <!-- BOTÃO DE AVALIAÇÃO COM SPINNER E CONTADOR -->
+            <button id="evaluate-button" class="w-full mt-4 px-4 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-300 flex items-center justify-center space-x-2" disabled>
+                <svg id="loading-spinner" class="animate-spin h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
+                <span id="evaluation-timer" class="text-white hidden text-sm font-light"></span>
+                <span id="button-text" class="">Avaliar Item com IA</span>
             </button>
 
             <!-- Área de Status/Mensagens -->
@@ -48,132 +49,161 @@
 
         <!-- Seção de Total Acumulado -->
         <div class="w-full max-w-2xl bg-indigo-50 p-6 rounded-xl card mb-6 border border-indigo-200">
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-indigo-800">Valor Total Acumulado do Lote</h2>
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-xl font-semibold text-indigo-800">Valor Total Acumulado</h2>
+                <div id="risk-indicator" class="text-lg font-bold">
+                    <!-- Indicador de Risco -->
+                </div>
             </div>
             <div class="mt-2">
                 <p id="total-value" class="text-4xl font-extrabold text-indigo-600">R$ 0,00</p>
-                <p class="text-sm text-indigo-500">O valor total é atualizado em tempo real.</p>
-                <div class="mt-4 text-sm text-gray-500">
-                    ID do Usuário: <span id="user-id" class="font-mono text-xs bg-gray-100 p-1 rounded">Carregando...</span>
-                    <button id="copy-user-id" class="text-indigo-600 hover:text-indigo-800 ml-2 text-xs" title="Copiar ID do Usuário">
-                        [Copiar]
+                <p class="text-sm text-indigo-500">Itens: <span id="total-quantity">0</span> | Média/Item: <span id="avg-unit-value">R$ 0,00</span></p>
+                <div class="mt-4 text-sm text-gray-500 flex items-center">
+                    <span class="mr-2">ID do Usuário:</span>
+                    <span id="user-id" class="font-mono text-xs bg-white border border-gray-200 p-1 rounded">Carregando...</span>
+                    <button id="copy-user-id" class="text-indigo-600 hover:text-indigo-800 ml-2 text-xs font-bold" title="Copiar ID">
+                        COPIAR
                     </button>
                 </div>
             </div>
-            <button id="reset-lot" class="mt-4 px-4 py-2 bg-red-500 text-white font-semibold rounded-lg text-sm hover:bg-red-600 transition duration-150">
+            <button id="reset-lot" class="mt-4 px-4 py-2 bg-red-500 text-white font-semibold rounded-lg text-sm hover:bg-red-600 transition duration-150 w-full sm:w-auto">
                 Limpar Lote (Zerar Valor)
             </button>
         </div>
 
         <!-- Lista de Itens Avaliados -->
         <div class="w-full max-w-2xl bg-white p-6 rounded-xl card">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Itens Avaliados (Histórico)</h2>
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Itens no Lote</h2>
             <ul id="item-list" class="space-y-4">
-                <li id="empty-state" class="text-gray-500 italic text-center p-4">Nenhum item avaliado ainda. Faça o upload da primeira foto!</li>
+                <li id="empty-state" class="text-gray-500 italic text-center p-4">Nenhum item qualificado no lote.</li>
             </ul>
         </div>
     </div>
 
     <!-- Modal de Mensagem Personalizada -->
     <div id="custom-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
-        <div class="bg-white p-6 rounded-lg max-w-sm w-full shadow-2xl">
+        <div class="bg-white p-6 rounded-lg max-w-sm w-full shadow-2xl border-l-4 border-indigo-600">
             <h3 id="modal-title" class="text-lg font-bold text-gray-800 mb-3">Título</h3>
             <p id="modal-content" class="text-gray-600 mb-4">Conteúdo da mensagem.</p>
             <button id="modal-close" class="w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700">OK</button>
         </div>
     </div>
 
-  
     <script type="module">
-        // Importações obrigatórias do Firebase para um aplicativo de página única
-        // Adicionada importação de runTransaction
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, setDoc, collection, query, where, getDocs, setLogLevel, runTransaction } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Variáveis globais fornecidas pelo ambiente Canvas (necessárias para Firebase)
+        // Variáveis de Ambiente
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-       
-        // Configuração de API do Gemini (deve ser vazia e será preenchida pelo ambiente)
-        const apiKey = "";
+        const apiKey = ""; // API Key injetada pelo ambiente
         const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-        const LOT_ID = 'current_lot'; // ID Fixo para o lote atual
+        const LOT_ID = 'current_lot'; 
 
-        // Inicialização e referências
+        // Referências Globais
         let app, db, auth, userId = null;
-        let selectedImageBase64 = null; // Armazena o Base64 do upload (agora comprimido)
+        let selectedImageBase64 = null;
         let isAuthReady = false;
 
         // Elementos DOM
         const evaluateButton = document.getElementById('evaluate-button');
         const uploadLabel = document.getElementById('upload-label');
         const photoUpload = document.getElementById('photo-upload');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const buttonText = document.getElementById('button-text');
+        const evaluationTimer = document.getElementById('evaluation-timer');
+        
+        // Timer
+        let timerIntervalId = null;
+        const TIMEOUT_SECONDS = 30;
 
-        // --- Funções de Utilitários e UI ---
+        // --- Prompt do Sistema (REGRAS ESTRITAS) ---
+        const SYSTEM_PROMPT = `
+🎯 Papel da IA:
+Você é uma IA especialista em avaliação, precificação e análise de risco de produtos de logística reversa, com foco exclusivo em: Eletrônicos Portáteis, Informática, Eletrônicos Domésticos e Eletrodomésticos Pequenos.
 
-        /**
-         * Exibe um modal de mensagem personalizado em vez de usar alert()
-         * @param {string} title - Título do modal.
-         * @param {string} content - Conteúdo da mensagem.
-         */
+🔒 ESCOPO FIXO (NÃO SAIR DISSO):
+Analise APENAS: Celulares, Tablets, Smartwatches, Fones, Notebooks, Desktops, Monitores, Componentes, TVs, Projetores, Som, Cafeteiras, Airfryers, Micro-ondas, Aspiradores, Ventiladores, Ferros.
+
+❌ PROIBIDO:
+Veículos, Máquinas industriais, Ferramentas pesadas, Móveis, Imóveis, Eletrodomésticos grandes (geladeira, fogão).
+
+⚠️ REGRA DE REJEIÇÃO:
+Se o produto estiver fora do escopo, defina o campo JSON "isInScope" como false e "outOfScopeReason" como "Produto fora do escopo de análise.". NÃO estime preço.
+
+📊 Critérios de Análise:
+1. Identifique o item e categoria.
+2. Estado físico (Novo, Usado, Defeito, Sucata).
+3. Valor de Mercado (Estimativa conservadora).
+4. Risco da Categoria (1=Baixo a 10=Alto).
+5. Preço Máximo para Leilão (Lance recomendado).
+6. Potencial de Revenda (Venda direta, Reparo, Peças).
+
+Sua resposta DEVE ser um objeto JSON válido seguindo estritamente o schema solicitado.
+`;
+
+        // --- Funções de UI ---
+
         function showModal(title, content) {
             document.getElementById('modal-title').textContent = title;
             document.getElementById('modal-content').textContent = content;
             document.getElementById('custom-modal').classList.remove('hidden');
         }
 
-        /**
-         * Habilita/desabilita o botão de avaliação e o spinner.
-         * @param {boolean} isLoading - Se está carregando ou não.
-         * @param {string} text - Texto a ser exibido no botão.
-         */
         function setButtonState(isLoading, text) {
-            const buttonText = document.getElementById('button-text');
-            const spinner = document.getElementById('loading-spinner');
-
             evaluateButton.disabled = isLoading;
-            buttonText.textContent = text;
-            spinner.classList.toggle('hidden', !isLoading);
+            loadingSpinner.classList.toggle('hidden', !isLoading);
             buttonText.classList.toggle('hidden', isLoading);
-           
-            // Em modo único, o botão fica desabilitado se não houver imagem selecionada
+            
             if (!isLoading) {
+                buttonText.textContent = text;
                 evaluateButton.disabled = !selectedImageBase64;
             }
         }
+        
+        function startTimer() {
+            clearTimer();
+            let timeLeft = TIMEOUT_SECONDS;
+            evaluationTimer.classList.remove('hidden');
+            evaluationTimer.textContent = `(0:${timeLeft.toString().padStart(2, '0')}s)`;
 
-        /**
-         * Exibe mensagens de status (sucesso, erro, informativo).
-         * @param {string} message - A mensagem a ser exibida.
-         * @param {string} type - 'success', 'error', 'info'.
-         */
+            timerIntervalId = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearTimer();
+                    evaluationTimer.textContent = `(0:00s)`;
+                } else {
+                    evaluationTimer.textContent = `(0:${timeLeft.toString().padStart(2, '0')}s)`;
+                }
+                if (timeLeft <= 10) evaluationTimer.classList.add('text-red-300');
+            }, 1000);
+        }
+
+        function clearTimer() {
+            if (timerIntervalId !== null) {
+                clearInterval(timerIntervalId);
+                timerIntervalId = null;
+            }
+            evaluationTimer.classList.add('hidden');
+            evaluationTimer.classList.remove('text-red-300');
+            evaluationTimer.textContent = '';
+        }
+
         function displayMessage(message, type) {
             const messageArea = document.getElementById('message-area');
             let color = '';
-           
             switch (type) {
                 case 'success': color = 'text-green-600 bg-green-100'; break;
                 case 'error': color = 'text-red-600 bg-red-100'; break;
                 case 'info': color = 'text-blue-600 bg-blue-100'; break;
                 default: color = 'text-gray-600 bg-gray-100'; break;
             }
-
             messageArea.innerHTML = `<p class="p-2 rounded ${color}">${message}</p>`;
             setTimeout(() => { messageArea.innerHTML = ''; }, 5000);
         }
-       
-        // --- Função de Processamento de Imagem (Compressão) ---
-
-        /**
-         * Comprime uma imagem Base64 para um tamanho máximo alvo (em kilobytes).
-         * Reduz a qualidade do JPEG até atingir o limite de tamanho.
-         * @param {string} base64Image - A imagem Base64 (incluindo o prefixo data:image/...).
-         * @param {number} maxKiloBytes - O tamanho máximo desejado em KB (e.g., 900).
-         * @returns {Promise<string>} A imagem Base64 comprimida.
-         */
+        
         function compressImage(base64Image, maxKiloBytes) {
             return new Promise((resolve) => {
                 const img = new Image();
@@ -183,178 +213,157 @@
                     canvas.width = img.width;
                     canvas.height = img.height;
                     ctx.drawImage(img, 0, 0, img.width, img.height);
-
                     let compressedImage = base64Image;
-                    let currentQuality = 0.9; // Começa com 90% de qualidade
+                    let currentQuality = 0.9;
                     const maxBytes = maxKiloBytes * 1024;
-                    const minQuality = 0.4; // Qualidade mínima aceitável
-
-                    // Loop de compressão: Reduz a qualidade até que o tamanho seja atingido
+                    const minQuality = 0.4;
                     while (compressedImage.length > maxBytes && currentQuality > minQuality) {
-                        currentQuality -= 0.1; // Reduz a qualidade em 10%
+                        currentQuality -= 0.1;
                         compressedImage = canvas.toDataURL('image/jpeg', currentQuality);
                     }
-                   
-                    // Se a imagem ainda for muito grande (e a qualidade já for baixa), reduz a resolução
                     if (compressedImage.length > maxBytes) {
-                        // Calcula o fator de escala necessário para atingir o tamanho máximo
                         const ratio = Math.sqrt(maxBytes / compressedImage.length);
                         canvas.width = img.width * ratio;
                         canvas.height = img.height * ratio;
-                       
-                        // Redesenha a imagem com a resolução reduzida
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                       
-                        // Retorna a imagem na nova resolução com qualidade alta (0.9)
                         compressedImage = canvas.toDataURL('image/jpeg', 0.9);
                     }
-
-
                     resolve(compressedImage);
                 };
-                img.onerror = () => resolve(base64Image); // Em caso de erro, retorna a imagem original
+                img.onerror = () => resolve(base64Image);
                 img.src = base64Image;
             });
         }
+        
+        function calculateLotRisk(lotData) {
+            const { totalValue, totalQuantity, totalCategoryRiskSum } = lotData;
+            if (totalQuantity === 0) return { riskLevel: 'N/A', indicator: '⚪️', color: 'text-gray-400', overallRiskScore: 0 };
 
-        // --- Funções de Firebase ---
+            const AUV = totalValue / totalQuantity;
+            let auvScore; 
+            if (AUV < 300) auvScore = 2; 
+            else if (AUV < 2000) auvScore = 5; 
+            else auvScore = 9; 
 
-        /**
-         * Inicializa o Firebase, autentica o usuário e configura o listener de autenticação.
-         */
+            const AvgCR = totalCategoryRiskSum / totalQuantity; 
+            let volumeScore = totalQuantity < 5 ? 2 : (totalQuantity < 15 ? 5 : 8);
+            
+            const overallRiskScore = (AvgCR * 0.5) + (auvScore * 0.3) + (volumeScore * 0.2);
+
+            let riskLevel, indicator, color;
+            if (overallRiskScore < 4.0) { riskLevel = 'Baixo Risco'; indicator = '🟢'; color = 'text-green-600'; }
+            else if (overallRiskScore < 7.5) { riskLevel = 'Médio Risco'; indicator = '🟡'; color = 'text-yellow-600'; }
+            else { riskLevel = 'Alto Risco'; indicator = '🔴'; color = 'text-red-600'; }
+            
+            return { riskLevel, indicator, color, overallRiskScore: overallRiskScore.toFixed(1) };
+        }
+
+        // --- Firebase ---
+
         async function initializeFirebase() {
             try {
-                // Configura o nível de log para debug, útil para diagnosticar problemas no console
-                setLogLevel('debug');
-               
+                setLogLevel('silent'); // Limpa logs para produção
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-               
-                // 1. Autenticação
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                if (initialAuthToken) await signInWithCustomToken(auth, initialAuthToken);
+                else await signInAnonymously(auth);
 
-                // 2. Listener de Estado de Autenticação
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         userId = user.uid;
                         document.getElementById('user-id').textContent = userId;
                         isAuthReady = true;
-                       
-                        // Garante que o documento do lote existe na primeira inicialização
                         setupLotDocument();
-                        // Configura o listener em tempo real para o Firestore
                         setupRealtimeListener();
-
-                    } else {
-                        // Usuário deslogado ou falha, tenta anonimamente se não houver token
-                        if (!initialAuthToken) {
-                             signInAnonymously(auth).catch(e => {
-                                console.error("Erro ao tentar login anônimo:", e);
-                                showModal("Erro de Autenticação", "Não foi possível iniciar a sessão de usuário.");
-                            });
-                        }
+                    } else if (!initialAuthToken) {
+                         signInAnonymously(auth).catch(e => console.error(e));
                     }
                 });
-
             } catch (error) {
-                console.error("Erro na inicialização do Firebase:", error);
-                showModal("Erro Crítico", "Falha ao conectar-se ao serviço de dados. Consulte o console.");
+                console.error("Firebase Init Error:", error);
+                showModal("Erro Crítico", "Falha na conexão de dados.");
             }
         }
 
-        /**
-         * Obtém a referência do documento do lote.
-         * O caminho é /artifacts/{appId}/public/data/auction_lots/{LOT_ID}
-         * @returns {object} Referência do documento.
-         */
         function getLotDocRef() {
-            // Documentos de dados públicos (compartilhados entre usuários no mesmo app/lote)
             return doc(db, 'artifacts', appId, 'public', 'data', 'auction_lots', LOT_ID);
         }
 
-        /**
-         * Garante que o documento do lote exista no Firestore com valores padrão.
-         */
         async function setupLotDocument() {
             if (!db || !userId) return;
             const lotRef = getLotDocRef();
             const defaultLot = {
-                items: [],
-                totalValue: 0,
-                lastUpdated: new Date().toISOString(),
-                creatorId: userId // Marca quem criou/usa o lote
+                items: [], totalValue: 0, totalQuantity: 0, totalCategoryRiskSum: 0,
+                lastUpdated: new Date().toISOString(), creatorId: userId
             };
-
-            // Usa setDoc com merge: true para criar se não existir e não sobrescrever
-            // se o documento já contiver outros campos.
-            try {
-                await setDoc(lotRef, defaultLot, { merge: true });
-                console.log("Documento do lote configurado com sucesso.");
-            } catch (e) {
-                console.error("Erro ao configurar o documento do lote:", e);
-                displayMessage("Erro ao carregar dados iniciais do lote.", 'error');
-            }
+            try { await setDoc(lotRef, defaultLot, { merge: true }); } catch (e) { console.error(e); }
         }
 
-        /**
-         * Configura o listener em tempo real para o documento do lote.
-         */
         function setupRealtimeListener() {
             if (!isAuthReady || !db) return;
-
-            const lotRef = getLotDocRef();
-
-            onSnapshot(lotRef, (docSnapshot) => {
-                if (docSnapshot.exists()) {
-                    const data = docSnapshot.data();
-                    renderLotData(data);
-                } else {
-                    // Se o documento foi excluído (e.g., pelo reset), recria-o.
-                    setupLotDocument();
-                    renderLotData({ items: [], totalValue: 0 });
-                }
-            }, (error) => {
-                console.error("Erro no listener em tempo real:", error);
-                displayMessage("Erro de conexão em tempo real com o Firestore.", 'error');
-            });
+            onSnapshot(getLotDocRef(), (docSnapshot) => {
+                if (docSnapshot.exists()) renderLotData(docSnapshot.data());
+                else { setupLotDocument(); renderLotData({ items: [], totalValue: 0, totalQuantity: 0, totalCategoryRiskSum: 0 }); }
+            }, (error) => console.error("Snapshot error:", error));
         }
 
-        /**
-         * Renderiza os dados do lote (total e lista de itens) na UI.
-         * @param {object} data - Dados do lote { items: [], totalValue: 0 }
-         */
         function renderLotData(data) {
             const totalValueElement = document.getElementById('total-value');
             const itemListElement = document.getElementById('item-list');
             const emptyState = document.getElementById('empty-state');
+            const totalQuantityElement = document.getElementById('total-quantity');
+            const avgUnitValueElement = document.getElementById('avg-unit-value');
+            const riskIndicatorElement = document.getElementById('risk-indicator');
 
             const total = data.totalValue || 0;
             const items = data.items || [];
+            const quantity = data.totalQuantity || 0;
+            const risk = calculateLotRisk(data);
+            const avgUnitValue = quantity > 0 ? total / quantity : 0;
 
             totalValueElement.textContent = `R$ ${total.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
-            itemListElement.innerHTML = ''; // Limpa a lista atual
+            totalQuantityElement.textContent = quantity;
+            avgUnitValueElement.textContent = `R$ ${avgUnitValue.toFixed(2).replace('.', ',')}`;
+            riskIndicatorElement.innerHTML = `<span class="${risk.color} text-3xl mr-1 align-middle">${risk.indicator}</span><span class="text-gray-800 text-sm font-bold align-middle">${risk.riskLevel}</span>`;
 
+            itemListElement.innerHTML = '';
             if (items.length === 0) {
                 emptyState.classList.remove('hidden');
                 itemListElement.appendChild(emptyState);
             } else {
                 emptyState.classList.add('hidden');
-                items.reverse().forEach((item, index) => { // Mostra o mais novo primeiro
+                items.slice().reverse().forEach((item) => {
                     const listItem = document.createElement('li');
-                    listItem.className = 'flex flex-col sm:flex-row items-start sm:items-center bg-gray-50 p-4 rounded-lg border-l-4 border-indigo-500';
+                    listItem.className = 'flex flex-col sm:flex-row items-start bg-gray-50 p-4 rounded-lg border-l-4 border-indigo-500 shadow-sm transition hover:shadow-md';
                     listItem.innerHTML = `
-                        <div class="sm:w-24 sm:h-24 flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
-                            ${item.photo ? `<img src="${item.photo}" alt="${item.itemName}" class="w-full h-full object-cover rounded-lg shadow-md">` : `<div class="w-full h-full bg-gray-300 rounded-lg flex items-center justify-center text-xs text-gray-600">Sem Foto</div>`}
+                        <div class="sm:w-28 sm:h-28 flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
+                            ${item.photo ? `<img src="${item.photo}" alt="${item.itemName}" class="w-full h-full object-cover rounded-lg shadow-md border border-gray-200">` : `<div class="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-500">Sem Imagem</div>`}
                         </div>
-                        <div class="flex-grow">
-                            <h3 class="text-lg font-semibold text-gray-800">${item.itemName}</h3>
-                            <p class="text-xs font-mono text-indigo-600">R$ ${item['estimatedPriceR$:'].toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</p>
-                            <p class="text-sm text-gray-600 mt-1">${item.description}</p>
+                        <div class="flex-grow w-full">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-800">${item.itemName}</h3>
+                                    <span class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full mb-2 font-medium">${item.itemCategory}</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-indigo-700">R$ ${item['estimatedPriceR$:'].toFixed(2).replace('.', ',')}</p>
+                                    <p class="text-xs text-gray-500">Lance Máx: R$ ${item.maxBidRecommendationR$ ? item.maxBidRecommendationR$.toFixed(2).replace('.', ',') : '---'}</p>
+                                </div>
+                            </div>
+                            
+                            <p class="text-sm text-gray-700 mt-1 leading-snug"><strong>Estado:</strong> ${item.condition || 'N/A'} - ${item.description}</p>
+                            
+                            <div class="mt-3 grid grid-cols-2 gap-2 text-xs text-gray-600 bg-white p-2 rounded border border-gray-100">
+                                <div>
+                                    <span class="font-semibold text-gray-500">Potencial:</span><br>
+                                    ${item.resalePotential || 'Não analisado'}
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-semibold text-gray-500">Risco Categoria:</span><br>
+                                    <span class="${item.categoryRiskScore > 7 ? 'text-red-500 font-bold' : (item.categoryRiskScore < 4 ? 'text-green-500 font-bold' : 'text-yellow-600 font-bold')}">${item.categoryRiskScore}/10</span>
+                                </div>
+                            </div>
                         </div>
                     `;
                     itemListElement.appendChild(listItem);
@@ -362,343 +371,176 @@
             }
         }
 
-        /**
-         * Adiciona o novo item ao lote no Firestore e atualiza o total usando uma Transação.
-         * Garante que a operação seja atômica (mais resistente a falhas de persistência e concorrência).
-         * @param {object} newItemData - Dados do item retornado pela IA.
-         * @param {string} imageBase64 - Imagem Base64 (já comprimida).
-         */
         async function addItemToLot(newItemData, imageBase64) {
-            if (!isAuthReady || !db) {
-                showModal("Aguardando Conexão", "Por favor, aguarde a inicialização da conexão com o banco de dados.");
-                return;
-            }
-
-            setButtonState(true, "Atualizando Lote...");
-
+            if (!isAuthReady || !db) { showModal("Conexão", "Aguarde a conexão com o banco."); return; }
+            setButtonState(true, "Salvando...");
             try {
                 const lotRef = getLotDocRef();
-                const newPrice = newItemData['estimatedPriceR$:'];
-
-                // USANDO TRANSAÇÃO PARA GARANTIR ATOMICIDADE E CORRIGIR ERROS DE CONCORRÊNCIA
                 await runTransaction(db, async (transaction) => {
-                    // 1. LER o estado atual do documento (dentro da transação)
                     const lotDoc = await transaction.get(lotRef);
+                    let data = lotDoc.exists() ? lotDoc.data() : {};
+                    
+                    const updatedItems = [...(data.items || []), { ...newItemData, photo: imageBase64 }];
+                    const updatedTotal = (data.totalValue || 0) + newItemData['estimatedPriceR$:'];
+                    const updatedQuantity = (data.totalQuantity || 0) + 1;
+                    const updatedRiskSum = (data.totalCategoryRiskSum || 0) + newItemData.categoryRiskScore;
 
-                    let currentItems = [];
-                    let currentTotal = 0;
-
-                    if (lotDoc.exists()) {
-                        const data = lotDoc.data();
-                        currentItems = data.items || [];
-                        currentTotal = data.totalValue || 0;
-                    } else {
-                         // Se o documento não existe, inicializa com valores padrão
-                         console.warn("Documento do lote não encontrado, inicializando...");
-                    }
-
-                    // 2. MODIFICAR (Calcula o novo estado)
-                    const updatedItems = [...currentItems, { ...newItemData, photo: imageBase64 }];
-                    const updatedTotal = currentTotal + newPrice;
-
-                    // 3. ESCREVER o novo estado de volta
                     transaction.set(lotRef, {
-                        items: updatedItems,
-                        totalValue: updatedTotal,
-                        lastUpdated: new Date().toISOString(),
-                        creatorId: userId
+                        items: updatedItems, totalValue: updatedTotal, totalQuantity: updatedQuantity,
+                        totalCategoryRiskSum: updatedRiskSum, lastUpdated: new Date().toISOString(), creatorId: userId
                     }, { merge: true });
-
-                    return updatedTotal;
                 });
-
-                displayMessage(`Item "${newItemData.itemName}" avaliado e adicionado! Valor: R$ ${newPrice.toFixed(2).replace('.', ',')}`, 'success');
-
+                displayMessage(`Item adicionado: ${newItemData.itemName}`, 'success');
             } catch (error) {
-                console.error("Erro CRÍTICO na persistência (Transação Firebase):", error);
-                throw new Error("Falha de persistência no Firebase. Tente novamente.");
+                console.error("Erro Persistência:", error);
+                throw new Error("Erro ao salvar dados. Tente novamente.");
             }
         }
-       
-        // --- Funções de IA (Gemini API) ---
-
-        /**
-         * Simula o backoff exponencial para retentar chamadas de API.
-         * @param {function} fn - Função a ser executada.
-         * @param {number} retries - Número de tentativas.
-         * @param {number} delay - Atraso inicial em ms.
-         */
+        
+        // --- API Gemini ---
         async function exponentialBackoff(fn, retries = 5, delay = 1000) {
             for (let i = 0; i < retries; i++) {
-                try {
-                    return await fn();
-                } catch (error) {
-                    if (i === retries - 1) throw error;
-                    await new Promise(resolve => setTimeout(resolve, delay * (2 ** i)));
-                }
+                try { return await fn(); } catch (e) { if (i === retries - 1) throw e; await new Promise(r => setTimeout(r, delay * (2 ** i))); }
             }
         }
 
-        /**
-         * Chama o Gemini API para identificar e precificar o item.
-         * O modelo retorna um JSON estruturado para fácil processamento.
-         * @param {string} base64Image - A imagem Base64 do item (incluindo o prefixo data:image/...).
-         */
         async function callGeminiVision(base64Image) {
             if (!base64Image) return null;
-           
             const [header, data] = base64Image.split(',');
-            const mimeMatch = header.match(/data:(.*?);/);
-            const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
-           
-            // Prompt em português para melhor desempenho do modelo de visão, solicitando resposta em português/JSON
-            const systemPrompt = "You are a professional auction appraiser. Your task is to accurately identify the object in the image, provide a brief description, and estimate its fair auction price in Brazilian Reais (R$). Your response MUST be a valid JSON object.";
-            const userQuery = "Identify this item, describe its condition, and estimate its auction value in R$. The description must be in Portuguese.";
+            const mimeType = header.match(/data:(.*?);/)[1];
+            
+            const userQuery = "Analise este item. Responda APENAS com o JSON.";
 
             const payload = {
-                contents: [
-                    {
-                        role: "user",
-                        parts: [
-                            { text: userQuery },
-                            {
-                                inlineData: {
-                                    mimeType: mimeType,
-                                    data: data
-                                }
-                            }
-                        ]
-                    }
-                ],
-                // Configuração obrigatória para retorno JSON estruturado
+                contents: [{ role: "user", parts: [{ text: userQuery }, { inlineData: { mimeType: mimeType, data: data } }] }],
                 generationConfig: {
                     responseMimeType: "application/json",
                     responseSchema: {
                         type: "OBJECT",
                         properties: {
-                            "itemName": { "type": "STRING", "description": "Nome do item identificado." },
-                            "description": { "type": "STRING", "description": "Uma breve descrição e avaliação do estado do item, em português." },
-                            "estimatedPriceR$:": { "type": "NUMBER", "description": "O valor de avaliação em Reais Brasileiros (R$), sem símbolos." }
+                            "isInScope": { "type": "BOOLEAN", "description": "True se for eletrônico/eletrodoméstico pequeno. False se for móvel, roupa, carro, etc." },
+                            "outOfScopeReason": { "type": "STRING", "description": "Se não estiver no escopo, explique brevemente o motivo." },
+                            "itemName": { "type": "STRING", "description": "Nome curto do produto (Marca/Modelo)." },
+                            "description": { "type": "STRING", "description": "Resumo do estado e observações." },
+                            "condition": { "type": "STRING", "description": "Ex: Novo, Usado, Sucata." },
+                            "estimatedPriceR$:": { "type": "NUMBER", "description": "Valor de mercado unitário." },
+                            "maxBidRecommendationR$": { "type": "NUMBER", "description": "Preço máximo recomendado para lance em leilão." },
+                            "itemCategory": { "type": "STRING", "description": "Categoria principal." },
+                            "categoryRiskScore": { "type": "NUMBER", "description": "Risco de 1 a 10." },
+                            "resalePotential": { "type": "STRING", "description": "Venda direta, Reparo ou Peças." }
                         },
-                        required: ["itemName", "description", "estimatedPriceR$:"],
-                        propertyOrdering: ["itemName", "description", "estimatedPriceR$:"]
+                        required: ["isInScope", "itemName", "description", "condition", "estimatedPriceR$:", "itemCategory", "categoryRiskScore", "maxBidRecommendationR$", "resalePotential"]
                     }
                 },
-                systemInstruction: {
-                    parts: [{ text: systemPrompt }]
-                }
+                systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }
             };
-                      // Função de requisição para usar com o Backoff Exponencial
+            
             const fetchFn = async () => {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    const errorBody = await response.text();
-                    console.error("Erro na API Gemini:", response.status, errorBody);
-                    throw new Error(`Falha na API: ${response.status}`);
-                }
-
+                const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
                 return response.json();
             };
 
-            const result = await exponentialBackoff(fetchFn);
-           
-            const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("AI_TIMEOUT")), 30000));
 
-            if (jsonText) {
-                try {
-                    return JSON.parse(jsonText);
-                } catch (e) {
-                    console.error("Erro ao fazer parse do JSON da IA:", e, jsonText);
-                    throw new Error("A IA retornou um formato inválido. Tente uma foto mais clara.");
-                }
-            } else {
-                throw new Error("A IA não conseguiu gerar uma avaliação válida para a imagem.");
-            }
+            try {
+                const result = await Promise.race([exponentialBackoff(fetchFn), timeoutPromise]);
+                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (jsonText) return JSON.parse(jsonText);
+                throw new Error("Resposta inválida da IA.");
+            } catch (error) { throw error; }
         }
 
-        // --- Event Handlers (Manipuladores de Eventos) ---
-
-        /**
-         * Lida com o upload do arquivo de imagem (ou captura de foto nativa).
-         */
+        // --- Eventos ---
         photoUpload.addEventListener('change', function(event) {
             const file = event.target.files[0];
-
             selectedImageBase64 = null;
             evaluateButton.disabled = true;
             uploadLabel.textContent = 'Clique para tirar uma foto AGORA ou selecionar na galeria';
 
             if (file) {
-                if (!file.type.startsWith('image/')) {
-                    showModal("Tipo de Arquivo Inválido", "Por favor, selecione um arquivo de imagem.");
-                    event.target.value = '';
-                    return;
-                }
-                // Verifica o tamanho inicial (antes da compressão, só para evitar carregar arquivos gigantes)
-                if (file.size > 10 * 1024 * 1024) { // Limite de 10MB para leitura inicial
-                    showModal("Arquivo Muito Grande", "O arquivo original excede o limite de 10MB. Selecione uma imagem menor.");
-                    event.target.value = '';
-                    return;
-                }
-
+                if (!file.type.startsWith('image/')) { showModal("Erro", "Arquivo inválido."); return; }
                 const reader = new FileReader();
                 reader.onload = async function(e) {
+                    setButtonState(true, "Processando...");
                     try {
-                        setButtonState(true, "Processando e Comprimindo Imagem (max 900 KB)...");
-                       
-                        // CHAMA A FUNÇÃO DE COMPRESSÃO AQUI (max 900 KB)
                         selectedImageBase64 = await compressImage(e.target.result, 900);
-                       
-                        // Exibe o novo tamanho (opcional)
                         const sizeInKB = Math.round(selectedImageBase64.length / 1024);
-                       
                         evaluateButton.disabled = false;
-                        uploadLabel.textContent = `Foto selecionada e processada: ${file.name} (${sizeInKB} KB)`;
-                    } catch (err) {
-                        console.error("Erro durante o processamento da imagem:", err);
-                        showModal("Erro de Processamento", "Não foi possível comprimir a imagem.");
-                    } finally {
-                        // Garante que o estado do botão seja restaurado após a compressão, mesmo se falhar
-                        setButtonState(false, "Avaliar Item com IA");
-                    }
-                };
-                reader.onerror = (e) => {
-                    console.error("Erro ao ler o arquivo:", e);
-                    showModal("Erro de Leitura", "Não foi possível ler o arquivo de imagem.");
+                        uploadLabel.textContent = `Foto pronta: ${file.name} (${sizeInKB} KB)`;
+                    } catch (err) { console.error(err); } finally { setButtonState(false, "Avaliar Item com IA"); }
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        /**
-         * Lida com o clique no botão de avaliação.
-         */
         evaluateButton.addEventListener('click', async () => {
-            if (!selectedImageBase64) {
-                showModal("Nenhuma Foto", "Por favor, capture ou selecione uma foto antes de avaliar.");
-                return;
-            }
-           
-            setButtonState(true, "Avaliando (Pode demorar)...");
-            document.getElementById('message-area').innerHTML = ''; // Limpa mensagens anteriores
+            if (!selectedImageBase64) return;
+            setButtonState(true, "Analisando...");
+            document.getElementById('message-area').innerHTML = ''; 
+            startTimer();
 
             try {
-                const processedImageBase64 = selectedImageBase64; // A imagem já está comprimida a este ponto
-               
-                const itemData = await callGeminiVision(processedImageBase64);
-               
-                // Validação mínima da estrutura retornada
-                if (!itemData.itemName || typeof itemData['estimatedPriceR$:'] !== 'number') {
-                    throw new Error("A IA não retornou o nome ou preço corretamente.");
+                const itemData = await callGeminiVision(selectedImageBase64);
+                
+                // 🛑 VERIFICAÇÃO DE ESCOPO (REGRA DE OURO)
+                if (itemData.isInScope === false) {
+                    showModal("Produto Não Qualificado", itemData.outOfScopeReason || "Este produto não pertence às categorias de eletrônicos ou informática permitidas.");
+                    // Não salva, não adiciona.
+                    return; 
                 }
 
-                // Arredonda o preço para 2 casas decimais
-                itemData['estimatedPriceR$:'] = parseFloat(itemData['estimatedPriceR$:'].toFixed(2));
-               
-                // Usa a transação para salvar de forma atômica
-                await addItemToLot(itemData, processedImageBase64);
+                // Normalização dos dados numéricos
+                itemData['estimatedPriceR$:'] = parseFloat(itemData['estimatedPriceR$:']?.toFixed(2) || 0);
+                itemData.maxBidRecommendationR$ = parseFloat(itemData.maxBidRecommendationR$?.toFixed(2) || 0);
+                itemData.categoryRiskScore = Math.min(10, Math.max(1, Math.round(itemData.categoryRiskScore || 5)));
+                
+                await addItemToLot(itemData, selectedImageBase64);
 
             } catch (error) {
-                // Captura o erro da IA ou o novo erro de persistência
-                console.error("Erro no processo de avaliação:", error);
-                showModal("Erro na Avaliação/Persistência", error.message || "Ocorreu um erro desconhecido. Verifique a foto e tente novamente.");
-               
+                console.error("Erro:", error);
+                let msg = error.message;
+                if (msg.includes("AI_TIMEOUT")) msg = "Tempo esgotado (30s). A imagem pode estar muito complexa ou a conexão lenta. Tente novamente.";
+                showModal("Atenção", msg);
             } finally {
-               // *** LIMPEZA CENTRALIZADA: RODA SEMPRE APÓS TENTATIVA, SUCESSO OU FALHA ***
-                setButtonState(false, "Avaliar Item com IA"); // Restaura o botão
-                selectedImageBase64 = null; // Limpa o estado de imagem
-                photoUpload.value = ''; // Limpa o buffer do input
-                uploadLabel.textContent = 'Clique para tirar uma foto AGORA ou selecionar na galeria'; // Restaura o label
+                clearTimer();
+                setButtonState(false, "Avaliar Item com IA");
+                selectedImageBase64 = null;
+                photoUpload.value = '';
+                uploadLabel.textContent = 'Clique para tirar uma foto AGORA ou selecionar na galeria';
             }
         });
 
-        /**
-         * Lida com o clique no botão de limpeza do lote.
-         */
         document.getElementById('reset-lot').addEventListener('click', () => {
-             showModal(
-                "Confirmação de Limpeza",
-                "Você tem certeza que deseja zerar o lote e remover todos os itens avaliados? Esta ação é irreversível.",
-                true
-             );
-
-             const modalCloseButton = document.getElementById('modal-close');
-             modalCloseButton.textContent = 'Sim, Limpar Lote';
-             modalCloseButton.onclick = async () => {
-                // Fecha o modal antes de iniciar a operação assíncrona
-                document.getElementById('custom-modal').classList.add('hidden');
-               
-                // Verifica a prontidão do Firebase
-                if (!isAuthReady || !db || !userId) {
-                    showModal("Erro de Conexão", "O banco de dados não está pronto ou o usuário não está autenticado. Tente novamente em instantes.");
-                    return;
-                }
-
+             showModal("Limpar Lote", "Deseja realmente apagar todos os itens?");
+             const btn = document.getElementById('modal-close');
+             btn.textContent = 'Confirmar Limpeza';
+             btn.onclick = async () => {
+                document.getElementById('custom-modal').classList.add('hidden'); 
+                if (!isAuthReady) return;
                 try {
-                    setButtonState(true, "Limpando Lote...");
-                    await setDoc(getLotDocRef(), {
-                        items: [],
-                        totalValue: 0,
-                        lastUpdated: new Date().toISOString(),
-                        creatorId: userId
-                    });
-                   
-                    displayMessage("Lote limpo com sucesso! Valor zerado.", 'info');
-                } catch (e) {
-                    console.error("Erro ao limpar lote:", e);
-                    showModal("Erro de Limpeza", "Falha ao limpar o lote no banco de dados. Consulte o console.");
-                } finally {
-                    // Restaura o comportamento padrão do modal e o estado do botão
-                    modalCloseButton.textContent = 'OK';
-                    modalCloseButton.onclick = () => document.getElementById('custom-modal').classList.add('hidden');
-                    setButtonState(false, "Avaliar Item com IA");
+                    setButtonState(true, "Limpando...");
+                    await setDoc(getLotDocRef(), { items: [], totalValue: 0, totalQuantity: 0, totalCategoryRiskSum: 0, lastUpdated: new Date().toISOString(), creatorId: userId });
+                    displayMessage("Lote reiniciado.", 'info');
+                } catch (e) { console.error(e); } finally { 
+                    btn.textContent = 'OK';
+                    btn.onclick = () => document.getElementById('custom-modal').classList.add('hidden');
+                    setButtonState(false, "Avaliar Item com IA"); 
                 }
              };
         });
 
-        /**
-         * Lida com o fechamento do modal.
-         */
         document.getElementById('modal-close').addEventListener('click', function() {
-            // Garante que o botão OK/Close volte ao comportamento padrão (fechar)
             this.textContent = 'OK';
-            this.onclick = () => document.getElementById('custom-modal').classList.add('hidden');
             document.getElementById('custom-modal').classList.add('hidden');
         });
 
-        /**
-         * Lida com a cópia do ID do usuário.
-         */
         document.getElementById('copy-user-id').addEventListener('click', () => {
-            const userIdText = document.getElementById('user-id').textContent;
-            try {
-                // Tenta usar a API moderna (pode falhar no iFrame)
-                navigator.clipboard.writeText(userIdText);
-                displayMessage("ID do Usuário copiado!", 'info');
-            } catch (err) {
-                // Fallback para document.execCommand (mais compatível com iFrames)
-                const tempInput = document.createElement('textarea');
-                tempInput.value = userIdText;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                displayMessage("ID do Usuário copiado (usando fallback)!", 'info');
-            }
+            const txt = document.getElementById('user-id').textContent;
+            navigator.clipboard.writeText(txt).then(() => displayMessage("ID Copiado", 'success')).catch(() => {});
         });
 
-
-        // Inicializa a aplicação e define o modo inicial
-        window.onload = () => {
-            initializeFirebase();
-            // Apenas definimos o estado inicial do botão, já que não há mais modos
-            evaluateButton.disabled = true;
-        };
+        window.onload = () => { initializeFirebase(); evaluateButton.disabled = true; };
     </script>
 </body>
 </html>
