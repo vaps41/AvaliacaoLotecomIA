@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avaliador de Lotes: Eletrônicos & Informática</title>
+    <title>Avaliador de Lotes: Eletrónica & Informática</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -16,14 +16,14 @@
     <div id="app" class="min-h-screen p-4 sm:p-6 flex flex-col items-center">
         <header class="w-full max-w-2xl text-center mb-6">
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Avaliador de Logística Reversa</h1>
-            <p class="text-sm text-gray-500 mt-1">Especialista em Eletrônicos, Informática e Eletroportáteis.</p>
+            <p class="text-sm text-gray-500 mt-1">Especialista em Eletrónica, Informática e Eletroportáteis.</p>
         </header>
 
-        <!-- Seção de Upload e Resultado do Item -->
+        <!-- Secção de Upload e Resultado do Item -->
         <div class="w-full max-w-2xl bg-white p-6 rounded-xl card mb-6">
             <h2 class="text-xl font-semibold text-gray-700 mb-4">Analisar Novo Produto</h2>
             
-            <!-- Input de Arquivo/Câmera -->
+            <!-- Input de Ficheiro/Câmara -->
             <label for="photo-upload" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-indigo-300 rounded-lg cursor-pointer hover:bg-indigo-50 transition duration-150">
                 <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.808-1.212A2 2 0 0110.535 5h2.93a2 2 0 011.664.89l.808 1.212A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 <span id="upload-label" class="mt-2 text-sm text-indigo-600 font-medium text-center">
@@ -47,7 +47,7 @@
 
         </div>
 
-        <!-- Seção de Total Acumulado -->
+        <!-- Secção de Total Acumulado -->
         <div class="w-full max-w-2xl bg-indigo-50 p-6 rounded-xl card mb-6 border border-indigo-200">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-xl font-semibold text-indigo-800">Valor Total Acumulado</h2>
@@ -59,8 +59,8 @@
                 <p id="total-value" class="text-4xl font-extrabold text-indigo-600">R$ 0,00</p>
                 <p class="text-sm text-indigo-500">Itens: <span id="total-quantity">0</span> | Média/Item: <span id="avg-unit-value">R$ 0,00</span></p>
                 <div class="mt-4 text-sm text-gray-500 flex items-center">
-                    <span class="mr-2">ID do Usuário:</span>
-                    <span id="user-id" class="font-mono text-xs bg-white border border-gray-200 p-1 rounded">Carregando...</span>
+                    <span class="mr-2">ID do Utilizador:</span>
+                    <span id="user-id" class="font-mono text-xs bg-white border border-gray-200 p-1 rounded">A carregar...</span>
                     <button id="copy-user-id" class="text-indigo-600 hover:text-indigo-800 ml-2 text-xs font-bold" title="Copiar ID">
                         COPIAR
                     </button>
@@ -94,18 +94,13 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, setDoc, collection, query, where, getDocs, setLogLevel, runTransaction } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Variáveis de Ambiente
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        const apiKey = ""; // API Key injetada pelo ambiente
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-        const LOT_ID = 'current_lot'; 
-
         // Referências Globais
         let app, db, auth, userId = null;
         let selectedImageBase64 = null;
         let isAuthReady = false;
+        let appId = 'default-app-id';
+
+        const LOT_ID = 'current_lot'; 
 
         // Elementos DOM
         const evaluateButton = document.getElementById('evaluate-button');
@@ -118,31 +113,6 @@
         // Timer
         let timerIntervalId = null;
         const TIMEOUT_SECONDS = 30;
-
-        // --- Prompt do Sistema (REGRAS ESTRITAS) ---
-        const SYSTEM_PROMPT = `
-🎯 Papel da IA:
-Você é uma IA especialista em avaliação, precificação e análise de risco de produtos de logística reversa, com foco exclusivo em: Eletrônicos Portáteis, Informática, Eletrônicos Domésticos e Eletrodomésticos Pequenos.
-
-🔒 ESCOPO FIXO (NÃO SAIR DISSO):
-Analise APENAS: Celulares, Tablets, Smartwatches, Fones, Notebooks, Desktops, Monitores, Componentes, TVs, Projetores, Som, Cafeteiras, Airfryers, Micro-ondas, Aspiradores, Ventiladores, Ferros.
-
-❌ PROIBIDO:
-Veículos, Máquinas industriais, Ferramentas pesadas, Móveis, Imóveis, Eletrodomésticos grandes (geladeira, fogão).
-
-⚠️ REGRA DE REJEIÇÃO:
-Se o produto estiver fora do escopo, defina o campo JSON "isInScope" como false e "outOfScopeReason" como "Produto fora do escopo de análise.". NÃO estime preço.
-
-📊 Critérios de Análise:
-1. Identifique o item e categoria.
-2. Estado físico (Novo, Usado, Defeito, Sucata).
-3. Valor de Mercado (Estimativa conservadora).
-4. Risco da Categoria (1=Baixo a 10=Alto).
-5. Preço Máximo para Leilão (Lance recomendado).
-6. Potencial de Revenda (Venda direta, Reparo, Peças).
-
-Sua resposta DEVE ser um objeto JSON válido seguindo estritamente o schema solicitado.
-`;
 
         // --- Funções de UI ---
 
@@ -262,12 +232,22 @@ Sua resposta DEVE ser um objeto JSON válido seguindo estritamente o schema soli
 
         async function initializeFirebase() {
             try {
-                setLogLevel('silent'); // Limpa logs para produção
+                // Fetch segura das configurações no Backend
+                const response = await fetch('/api/config');
+                if (!response.ok) throw new Error('Falha ao carregar configurações');
+                const configData = await response.json();
+                
+                const firebaseConfig = configData.firebaseConfig;
+                // Definir appId vindo do backend ou usar padrão
+                if (configData.appId) appId = configData.appId;
+
+                setLogLevel('silent');
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-                if (initialAuthToken) await signInWithCustomToken(auth, initialAuthToken);
-                else await signInAnonymously(auth);
+                
+                // Autenticação anónima (simplificado)
+                await signInAnonymously(auth);
 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
@@ -276,13 +256,13 @@ Sua resposta DEVE ser um objeto JSON válido seguindo estritamente o schema soli
                         isAuthReady = true;
                         setupLotDocument();
                         setupRealtimeListener();
-                    } else if (!initialAuthToken) {
+                    } else {
                          signInAnonymously(auth).catch(e => console.error(e));
                     }
                 });
             } catch (error) {
                 console.error("Firebase Init Error:", error);
-                showModal("Erro Crítico", "Falha na conexão de dados.");
+                showModal("Erro Crítico", "Falha na conexão de dados ou configurações ausentes.");
             }
         }
 
@@ -293,18 +273,23 @@ Sua resposta DEVE ser um objeto JSON válido seguindo estritamente o schema soli
         async function setupLotDocument() {
             if (!db || !userId) return;
             const lotRef = getLotDocRef();
-            const defaultLot = {
-                items: [], totalValue: 0, totalQuantity: 0, totalCategoryRiskSum: 0,
-                lastUpdated: new Date().toISOString(), creatorId: userId
-            };
-            try { await setDoc(lotRef, defaultLot, { merge: true }); } catch (e) { console.error(e); }
+            // Apenas cria se não existir para não sobrescrever dados
+            // Como é realtime, a interface atualiza sozinha
         }
 
         function setupRealtimeListener() {
             if (!isAuthReady || !db) return;
             onSnapshot(getLotDocRef(), (docSnapshot) => {
                 if (docSnapshot.exists()) renderLotData(docSnapshot.data());
-                else { setupLotDocument(); renderLotData({ items: [], totalValue: 0, totalQuantity: 0, totalCategoryRiskSum: 0 }); }
+                else { 
+                    // Se não existe, cria um documento inicial
+                     const defaultLot = {
+                        items: [], totalValue: 0, totalQuantity: 0, totalCategoryRiskSum: 0,
+                        lastUpdated: new Date().toISOString(), creatorId: userId
+                    };
+                    setDoc(getLotDocRef(), defaultLot, { merge: true });
+                    renderLotData(defaultLot); 
+                }
             }, (error) => console.error("Snapshot error:", error));
         }
 
@@ -373,7 +358,7 @@ Sua resposta DEVE ser um objeto JSON válido seguindo estritamente o schema soli
 
         async function addItemToLot(newItemData, imageBase64) {
             if (!isAuthReady || !db) { showModal("Conexão", "Aguarde a conexão com o banco."); return; }
-            setButtonState(true, "Salvando...");
+            setButtonState(true, "A guardar...");
             try {
                 const lotRef = getLotDocRef();
                 await runTransaction(db, async (transaction) => {
@@ -393,61 +378,34 @@ Sua resposta DEVE ser um objeto JSON válido seguindo estritamente o schema soli
                 displayMessage(`Item adicionado: ${newItemData.itemName}`, 'success');
             } catch (error) {
                 console.error("Erro Persistência:", error);
-                throw new Error("Erro ao salvar dados. Tente novamente.");
+                throw new Error("Erro ao guardar dados. Tente novamente.");
             }
         }
         
-        // --- API Gemini ---
-        async function exponentialBackoff(fn, retries = 5, delay = 1000) {
-            for (let i = 0; i < retries; i++) {
-                try { return await fn(); } catch (e) { if (i === retries - 1) throw e; await new Promise(r => setTimeout(r, delay * (2 ** i))); }
-            }
-        }
-
+        // --- API Backend Proxy (Gemini) ---
         async function callGeminiVision(base64Image) {
             if (!base64Image) return null;
-            const [header, data] = base64Image.split(',');
-            const mimeType = header.match(/data:(.*?);/)[1];
             
-            const userQuery = "Analise este item. Responda APENAS com o JSON.";
-
-            const payload = {
-                contents: [{ role: "user", parts: [{ text: userQuery }, { inlineData: { mimeType: mimeType, data: data } }] }],
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            "isInScope": { "type": "BOOLEAN", "description": "True se for eletrônico/eletrodoméstico pequeno. False se for móvel, roupa, carro, etc." },
-                            "outOfScopeReason": { "type": "STRING", "description": "Se não estiver no escopo, explique brevemente o motivo." },
-                            "itemName": { "type": "STRING", "description": "Nome curto do produto (Marca/Modelo)." },
-                            "description": { "type": "STRING", "description": "Resumo do estado e observações." },
-                            "condition": { "type": "STRING", "description": "Ex: Novo, Usado, Sucata." },
-                            "estimatedPriceR$:": { "type": "NUMBER", "description": "Valor de mercado unitário." },
-                            "maxBidRecommendationR$": { "type": "NUMBER", "description": "Preço máximo recomendado para lance em leilão." },
-                            "itemCategory": { "type": "STRING", "description": "Categoria principal." },
-                            "categoryRiskScore": { "type": "NUMBER", "description": "Risco de 1 a 10." },
-                            "resalePotential": { "type": "STRING", "description": "Venda direta, Reparo ou Peças." }
-                        },
-                        required: ["isInScope", "itemName", "description", "condition", "estimatedPriceR$:", "itemCategory", "categoryRiskScore", "maxBidRecommendationR$", "resalePotential"]
-                    }
-                },
-                systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }
-            };
-            
+            // Agora chamamos o nosso próprio backend na Vercel
+            // A lógica do prompt e a API Key estão ocultas no servidor
             const fetchFn = async () => {
-                const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                const response = await fetch('/api/analyze', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ image: base64Image }) 
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Server Error: ${response.status} - ${errorText}`);
+                }
                 return response.json();
             };
 
-            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("AI_TIMEOUT")), 30000));
-
+            // Sem lógica complexa de retry aqui, o backend pode tratar ou mantemos simples
             try {
-                const result = await Promise.race([exponentialBackoff(fetchFn), timeoutPromise]);
-                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (jsonText) return JSON.parse(jsonText);
-                throw new Error("Resposta inválida da IA.");
+                const result = await fetchFn();
+                return result; 
             } catch (error) { throw error; }
         }
 
@@ -459,10 +417,10 @@ Sua resposta DEVE ser um objeto JSON válido seguindo estritamente o schema soli
             uploadLabel.textContent = 'Clique para tirar uma foto AGORA ou selecionar na galeria';
 
             if (file) {
-                if (!file.type.startsWith('image/')) { showModal("Erro", "Arquivo inválido."); return; }
+                if (!file.type.startsWith('image/')) { showModal("Erro", "Ficheiro inválido."); return; }
                 const reader = new FileReader();
                 reader.onload = async function(e) {
-                    setButtonState(true, "Processando...");
+                    setButtonState(true, "A processar...");
                     try {
                         selectedImageBase64 = await compressImage(e.target.result, 900);
                         const sizeInKB = Math.round(selectedImageBase64.length / 1024);
@@ -476,21 +434,19 @@ Sua resposta DEVE ser um objeto JSON válido seguindo estritamente o schema soli
 
         evaluateButton.addEventListener('click', async () => {
             if (!selectedImageBase64) return;
-            setButtonState(true, "Analisando...");
+            setButtonState(true, "A analisar...");
             document.getElementById('message-area').innerHTML = ''; 
             startTimer();
 
             try {
                 const itemData = await callGeminiVision(selectedImageBase64);
                 
-                // 🛑 VERIFICAÇÃO DE ESCOPO (REGRA DE OURO)
                 if (itemData.isInScope === false) {
-                    showModal("Produto Não Qualificado", itemData.outOfScopeReason || "Este produto não pertence às categorias de eletrônicos ou informática permitidas.");
-                    // Não salva, não adiciona.
+                    showModal("Produto Não Qualificado", itemData.outOfScopeReason || "Este produto não pertence às categorias permitidas.");
                     return; 
                 }
 
-                // Normalização dos dados numéricos
+                // Normalização
                 itemData['estimatedPriceR$:'] = parseFloat(itemData['estimatedPriceR$:']?.toFixed(2) || 0);
                 itemData.maxBidRecommendationR$ = parseFloat(itemData.maxBidRecommendationR$?.toFixed(2) || 0);
                 itemData.categoryRiskScore = Math.min(10, Math.max(1, Math.round(itemData.categoryRiskScore || 5)));
@@ -500,8 +456,7 @@ Sua resposta DEVE ser um objeto JSON válido seguindo estritamente o schema soli
             } catch (error) {
                 console.error("Erro:", error);
                 let msg = error.message;
-                if (msg.includes("AI_TIMEOUT")) msg = "Tempo esgotado (30s). A imagem pode estar muito complexa ou a conexão lenta. Tente novamente.";
-                showModal("Atenção", msg);
+                showModal("Atenção", "Erro na análise: " + msg);
             } finally {
                 clearTimer();
                 setButtonState(false, "Avaliar Item com IA");
@@ -519,7 +474,7 @@ Sua resposta DEVE ser um objeto JSON válido seguindo estritamente o schema soli
                 document.getElementById('custom-modal').classList.add('hidden'); 
                 if (!isAuthReady) return;
                 try {
-                    setButtonState(true, "Limpando...");
+                    setButtonState(true, "A limpar...");
                     await setDoc(getLotDocRef(), { items: [], totalValue: 0, totalQuantity: 0, totalCategoryRiskSum: 0, lastUpdated: new Date().toISOString(), creatorId: userId });
                     displayMessage("Lote reiniciado.", 'info');
                 } catch (e) { console.error(e); } finally { 
@@ -543,5 +498,4 @@ Sua resposta DEVE ser um objeto JSON válido seguindo estritamente o schema soli
         window.onload = () => { initializeFirebase(); evaluateButton.disabled = true; };
     </script>
 </body>
-
 </html>
